@@ -18,9 +18,9 @@ namespace NZWalks.API.Controllers
             this.mapper = mapper;
         }
         [HttpGet]
-        public IActionResult GetAllRegions()
+        public async Task<IActionResult> GetAllRegions()
         {
-            var regions=regionRepository.GetAll();
+            var regions=await regionRepository.GetAllAsync();
             //Return DTO Regions
             //var regionsDTO = new List<Models.DTO.Region>();
             //regions.ToList().ForEach(region =>
