@@ -1,4 +1,5 @@
-﻿namespace NZWalks.API.Models.Domain
+﻿
+namespace NZWalks.API.Models.DTO
 {
     public class Region
     {
@@ -9,7 +10,5 @@
         public double Lat { get; set; }
         public double Long { get; set; }
         public long Population { get; set; }
-        //navigation Property
-        public IEnumerable<Walk> Walks { get; set; }
     }
 }
