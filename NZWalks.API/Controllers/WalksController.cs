@@ -29,8 +29,9 @@ namespace NZWalks.API.Controllers
             return Ok(walkDTO);
 
         }
+        
         [HttpGet]
-        [Route("id:guid")]
+        [Route("{id:guid}")]
         public async Task<IActionResult> getAllWalksAsync(Guid id)
         {
             //Get Walk Domain object from database
