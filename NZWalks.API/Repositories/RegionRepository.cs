@@ -43,5 +43,22 @@ namespace NZWalks.API.Repositories
         {
             return await appDbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<Region> UpdateAsync(Guid id, Region region)
+        {
+            var existingRegion =await appDbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
+            if (existingRegion==null)
+            {
+                return null;
+            }
+            existingRegion.Code=region.Code;
+            existingRegion.Name=region.Name;
+            existingRegion.Area=region.Area;
+            existingRegion.Lat=region.Lat;
+            existingRegion.Long=region.Long;
+            existingRegion.Population=region.Population;
+            await appDbContext.SaveChangesAsync();
+            return existingRegion;
+        }
     }
 }
