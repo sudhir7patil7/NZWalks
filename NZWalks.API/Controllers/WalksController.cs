@@ -12,14 +12,14 @@ namespace NZWalks.API.Controllers
         private readonly IWalkRepository walkRepository;
         private readonly IMapper mapper;
 
-        public WalksController(IWalkRepository walkRepository, IMapper mapper )
+        public WalksController(IWalkRepository walkRepository, IMapper mapper)
         {
             this.walkRepository = walkRepository;
             this.mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> getAllWalksAsync()
+        public async Task<IActionResult> getWalkAsync()
         {
             //Fetch date from Database
             var walksDomin = await walkRepository.GetAllAsync();
@@ -29,17 +29,43 @@ namespace NZWalks.API.Controllers
             return Ok(walkDTO);
 
         }
-        
+
         [HttpGet]
         [Route("{id:guid}")]
-        public async Task<IActionResult> getAllWalksAsync(Guid id)
+        [ActionName("getWalkAsync")]
+        public async Task<IActionResult> getWalkAsync(Guid id)
         {
             //Get Walk Domain object from database
             var walkDomain = await walkRepository.GetAsync(id);
             //Convert Domain object to DTO
-            var WalkDTO =  mapper.Map<Models.DTO.Walk>(walkDomain);
+            var WalkDTO = mapper.Map<Models.DTO.Walk>(walkDomain);
             //return response
             return Ok(WalkDTO);
         }
+        [HttpPost]
+        public async Task<IActionResult> AddWalkAsync([FromBody] Models.DTO.AddWalkRequest addWalkRequest)
+        {
+            //Convert DTO to Domain Object
+            var walkDomain = new Models.Domain.Walk
+            {
+                Length = addWalkRequest.Length,
+                Name = addWalkRequest.Name,
+                RegionId = addWalkRequest.RegionId,
+                WalkDifficultyId = addWalkRequest.WalkDifficultyId
+            };
+            //Pass domain object to Repository to persists this
+            walkDomain=await walkRepository.AddAsync(walkDomain);
+            //Convert the Domain object back to DTO
+            var walkDTO = new Models.DTO.Walk
+            {
+                Id = walkDomain.Id,
+                Length = walkDomain.Length,
+                Name = walkDomain.Name,
+                RegionId = walkDomain.RegionId,
+                WalkDifficultyId = walkDomain.WalkDifficultyId
+            };
+            //Send DTO response back to client
+            return CreatedAtAction(nameof(getWalkAsync), new { id = walkDTO.Id }, walkDTO);
+        }   
     }
 }
