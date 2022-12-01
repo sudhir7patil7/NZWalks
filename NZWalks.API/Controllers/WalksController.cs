@@ -102,5 +102,16 @@ namespace NZWalks.API.Controllers
             //Return response
             return Ok(walkDTO);
         }
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> DeleteWalkAsync(Guid id)
+        {
+            //Call Repository to delete walk
+            var walkDomain = await walkRepository.DeleteASync(id);
+            if (walkDomain == null) return NotFound();
+            var walkDTO=mapper.Map<Models.DTO.Walk>(walkDomain);
+            return Ok(walkDTO);
+
+        }
     }
 }

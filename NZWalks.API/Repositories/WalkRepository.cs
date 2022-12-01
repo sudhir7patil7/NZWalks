@@ -17,17 +17,29 @@ namespace NZWalks.API.Repositories
         public async Task<Walk> AddAsync(Walk walk)
         {
             //Assign new Id
-            walk.Id=Guid.NewGuid();
+            walk.Id = Guid.NewGuid();
             await appDbContext.Walks.AddAsync(walk);
             await appDbContext.SaveChangesAsync();
             return walk;
         }
 
+        public async Task<Walk> DeleteASync(Guid id)
+        {
+            var existingWalk = await appDbContext.Walks.FindAsync(id);
+            if (existingWalk == null)
+            {
+                return null;
+            }
+            appDbContext.Walks.Remove(existingWalk);
+            await appDbContext.SaveChangesAsync();
+            return existingWalk;
+        }
+
         public async Task<IEnumerable<Walk>> GetAllAsync()
         {
             return await appDbContext.Walks
-                .Include(x=>x.Region)
-                .Include(x=>x.WalkDifficulty)
+                .Include(x => x.Region)
+                .Include(x => x.WalkDifficulty)
                 .ToListAsync();
         }
 
@@ -41,13 +53,13 @@ namespace NZWalks.API.Repositories
 
         public async Task<Walk> UpdateASync(Guid id, Walk walk)
         {
-            var existingWalk=await appDbContext.Walks.FindAsync(id);
-            if (existingWalk!=null)
+            var existingWalk = await appDbContext.Walks.FindAsync(id);
+            if (existingWalk != null)
             {
                 existingWalk.Length = walk.Length;
-                existingWalk.Name=walk.Name;
+                existingWalk.Name = walk.Name;
                 existingWalk.WalkDifficultyId = walk.WalkDifficultyId;
-                existingWalk.RegionId=walk.RegionId;
+                existingWalk.RegionId = walk.RegionId;
                 await appDbContext.SaveChangesAsync();
                 return existingWalk;
             }
