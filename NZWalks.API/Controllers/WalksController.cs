@@ -64,7 +64,7 @@ namespace NZWalks.API.Controllers
                 RegionId = walkDomain.RegionId,
                 WalkDifficultyId = walkDomain.WalkDifficultyId
             };
-            //Send DTO response back to client
+            //Send DTO response back to client    
             return CreatedAtAction(nameof(getWalkAsync), new { id = walkDTO.Id }, walkDTO);
         }   
     }
