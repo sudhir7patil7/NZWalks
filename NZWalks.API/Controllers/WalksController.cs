@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
 
 namespace NZWalks.API.Controllers
@@ -54,7 +55,7 @@ namespace NZWalks.API.Controllers
                 WalkDifficultyId = addWalkRequest.WalkDifficultyId
             };
             //Pass domain object to Repository to persists this
-            walkDomain=await walkRepository.AddAsync(walkDomain);
+            walkDomain = await walkRepository.AddAsync(walkDomain);
             //Convert the Domain object back to DTO
             var walkDTO = new Models.DTO.Walk
             {
@@ -66,6 +67,40 @@ namespace NZWalks.API.Controllers
             };
             //Send DTO response back to client
             return CreatedAtAction(nameof(getWalkAsync), new { id = walkDTO.Id }, walkDTO);
-        }   
+        }
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateWalkAsync([FromRoute] Guid id,
+            [FromBody] Models.DTO.UpdateWalkRequest updateWalkRequest)
+        {
+            //Convert DTO to Domain Object
+            var walkDomain = new Models.Domain.Walk
+            {
+                Length = updateWalkRequest.Length,
+                Name = updateWalkRequest.Name,
+                RegionId = updateWalkRequest.RegionId,
+                WalkDifficultyId = updateWalkRequest.WalkDifficultyId
+
+            };
+            //Pass Details to repository-Get Domain object in response (or null)
+            walkDomain = await walkRepository.UpdateASync(id, walkDomain);
+            //Handle Null(Not found)
+            if (walkDomain == null)
+            {
+                return NotFound();
+            }
+
+            //Convert back Domain to DTO
+            var walkDTO = new Models.DTO.Walk
+            {
+                Id = walkDomain.Id,
+                Length = walkDomain.Length,
+                Name = walkDomain.Name,
+                RegionId = walkDomain.RegionId,
+                WalkDifficultyId = walkDomain.WalkDifficultyId
+            };
+            //Return response
+            return Ok(walkDTO);
+        }
     }
 }

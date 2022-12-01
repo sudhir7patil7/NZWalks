@@ -38,6 +38,20 @@ namespace NZWalks.API.Repositories
                 .Include(x => x.WalkDifficulty)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
-        
+
+        public async Task<Walk> UpdateASync(Guid id, Walk walk)
+        {
+            var existingWalk=await appDbContext.Walks.FindAsync(id);
+            if (existingWalk!=null)
+            {
+                existingWalk.Length = walk.Length;
+                existingWalk.Name=walk.Name;
+                existingWalk.WalkDifficultyId = walk.WalkDifficultyId;
+                existingWalk.RegionId=walk.RegionId;
+                await appDbContext.SaveChangesAsync();
+                return existingWalk;
+            }
+            return null;
+        }
     }
 }
