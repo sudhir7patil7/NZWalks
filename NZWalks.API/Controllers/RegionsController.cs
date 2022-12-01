@@ -55,34 +55,34 @@ namespace NZWalks.API.Controllers
             }
             var regionDTO = mapper.Map<Models.DTO.Region>(region);
             return Ok(regionDTO);
-            [HttpPost]
-            public async Task<IActionResult> AddRegionAsync(AddRegionRequest addRegionRequest)
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddRegionAsync(AddRegionRequest addRegionRequest)
+        {
+            //Request(DTO) to Domain Model
+            var region = new Models.Domain.Region()
             {
-                //Request(DTO) to Domain Model
-                var region = new Models.Domain.Region()
-                {
-                    Code = addRegionRequest.Code,
-                    Area = addRegionRequest.Area,
-                    Lat = addRegionRequest.Lat,
-                    Long = addRegionRequest.Long,
-                    Name = addRegionRequest.Name,
-                    Population = addRegionRequest.Population
-                };
-                //Pass details to Repository
-                region = await regionRepository.AddAsync(region);
-                //Convert back to DTO
-                var regionDTO = new Models.DTO.Region()
-                {
-                    Id = region.Id,
-                    Code = region.Code,
-                    Area = region.Area,
-                    Lat = region.Lat,
-                    Long = region.Long,
-                    Name = region.Name,
-                    Population = region.Population
-                };
-                return  CreatedAtAction(nameof(GetRegionAsync), new {id=regionDTO.Id},regionDTO);
-            }
+                Code = addRegionRequest.Code,
+                Area = addRegionRequest.Area,
+                Lat = addRegionRequest.Lat,
+                Long = addRegionRequest.Long,
+                Name = addRegionRequest.Name,
+                Population = addRegionRequest.Population
+            };
+            //Pass details to Repository
+            region = await regionRepository.AddAsync(region);
+            //Convert back to DTO
+            var regionDTO = new Models.DTO.Region()
+            {
+                Id = region.Id,
+                Code = region.Code,
+                Area = region.Area,
+                Lat = region.Lat,
+                Long = region.Long,
+                Name = region.Name,
+                Population = region.Population
+            };
+            return CreatedAtAction(nameof(GetRegionAsync), new { id = regionDTO.Id }, regionDTO);
         }
     }
 
