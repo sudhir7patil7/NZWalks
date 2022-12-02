@@ -21,6 +21,18 @@ namespace NZWalks.API.Repositories
             return walkDifficulty;
         }
 
+        public async Task<WalkDifficulty> DeleteAsync(Guid id)
+        {
+            var existingDifficulty = await appDbContext.WalkDifficulty.FindAsync(id);
+            if (existingDifficulty!=null)
+            {
+                appDbContext.WalkDifficulty.Remove(existingDifficulty);
+                await appDbContext.SaveChangesAsync();
+                return existingDifficulty;
+            }
+            return null;
+        }
+
         public async Task<IEnumerable<WalkDifficulty>> GetAllAsync()
         {
             return await appDbContext.WalkDifficulty.ToListAsync();
